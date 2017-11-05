@@ -28,17 +28,21 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => '商城后台管理系统',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Home', 'url' => ['/brand/index']],
+
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => '品牌列表', 'url' => ['/brand/index']];
+        $menuItems[] = ['label' => '文章列表', 'url' => ['/article/index']];
+        $menuItems[] = ['label' => '文章分类', 'url' => ['/article_category/index']];
+        $menuItems[] = ['label' => '商品列表', 'url' => ['goods/index']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
@@ -51,7 +55,9 @@ AppAsset::register($this);
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
+        'items' =>$menuItems,
+
+
     ]);
     NavBar::end();
     ?>
