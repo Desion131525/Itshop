@@ -10,6 +10,7 @@ use yii\web\UploadedFile;
 
 class BrandController extends \yii\web\Controller
 {
+    public $enableCsrfValidation = false;
     //>>1显示品牌列表
     public function actionIndex()
     {
@@ -39,12 +40,12 @@ class BrandController extends \yii\web\Controller
             //接收表单数据
             $model->load($request->post());
             //将文件封装成对象
-            $model->imgFile = UploadedFile::getInstance($model,'imgFile');
+            //$model->imgFile = UploadedFile::getInstance($model,'imgFile');
 
             //验证表单数据
             if ($model->validate())
             {
-                if($model->imgFile!=null)
+               /* if($model->imgFile!=null)
                 {
                     //获取文件扩展名
                     $ext = $model->imgFile->extension;
@@ -55,10 +56,9 @@ class BrandController extends \yii\web\Controller
                     $brand->logo = $fileName;
                 }else{
                     $brand->logo =  \Yii::getAlias('@web').'/upload/2.jpg';
-                }
+                }*/
 
                 //将文件路径保存到数据库
-
                 $brand->name = $model->name;
                 $brand->intro = $model->intro;
                 $brand->status = $model->status;
@@ -141,6 +141,29 @@ class BrandController extends \yii\web\Controller
 
     }
 
+    //ajax文件上传
+    public function actionUpload()
+    {
+        //接收上传文件
+        $request = new Request();
+        if($request->isPost)
+        {
+            $imgFile = UploadedFile::getInstanceByName('file');
+            //判断是否有文件上传
+            if($imgFile)
+            {
+                //获取文件扩展名
+                $ext = $imgFile->extension;
+                //拼接文件路径
+                $fileName = '/upload/'.uniqid().'.'.$ext;
+                //指定文件保存的路径
+                $imgFile->saveAs(\Yii::getAlias('@webroot').$fileName,0);
+            }
+
+        }
+
+
+    }
     //回收列表
     public function actionRecycle()
     {
