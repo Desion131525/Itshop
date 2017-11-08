@@ -14,25 +14,25 @@ use yii\base\Model;
 class Goods_categoryForm extends Model
 {
     public $name;
+    public $parent_id;
     public $intro;
     public function rules()
     {
         return [
-            [['name', 'intro'], 'required'],
+            [['name', 'intro','parent_id'], 'required'],
             [['intro'], 'string'],
             [['name'], 'string', 'max' => 50],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
             'id' => 'ID',
             'name' => '分类名称',
+            'parent_id' => '上级分类',
             'intro' => '描述',
         ];
     }
+
 }

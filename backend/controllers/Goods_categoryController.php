@@ -34,8 +34,11 @@ class Goods_categoryController extends Controller
     //>>2.添加分类
     public function actionAdd()
     {
+
         //显示表单
         $model = new Goods_categoryForm();
+        $model->parent_id = 0;
+
         $request = new Request();
         if($request->isPost)
         {
@@ -48,13 +51,26 @@ class Goods_categoryController extends Controller
                 //保存数据
                 $gc->name = $model->name;
                 $gc->intro = $model->intro;
-                $gc->save();
+                $gc->parent_id = $model->parent_id;
+                if ($model->parent_id == 0)
+                {
+
+                        $gc->makeRoot() ;
+
+
+
+                }else{
+                    $parent = Goods_category::findOne(['id'=>$gc->parent_id]);
+                    $gc->prependTo($parent);
+
+                }
+
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
                 $this->redirect('index');
-            }
+            };
 
-        }
+        };
 
         return $this->render('add',['model'=>$model]);
     }
@@ -70,6 +86,7 @@ class Goods_categoryController extends Controller
         $row = Goods_category::findOne($id);
         $model->name = $row->name;
         $model->intro = $row->intro;
+        $model->parent_id = $row->parent_id;
         if($request->isPost)
         {
             //接收修改后的数据
@@ -80,7 +97,26 @@ class Goods_categoryController extends Controller
                 //保存数据
                 $row->name = $model->name;
                 $row->intro = $model->intro;
-                $row->save();
+                $row->parent_id = $model->parent_id;
+                //判断
+                if ($model->parent_id == 0)
+                {
+                    //修改根节点
+                    //但是如果是根节点修改为根节点就会报错,所以要再判断一次
+                    if ($row->getOldAttribute('parent_id') == 0)
+                    {
+                        //如果要修改的节点为根节点,那么就直接保存.
+                        $row->save();
+                    }else{
+                        $row->makeRoot() ;
+                    }
+
+                }else{
+                    $parent = Goods_category::findOne(['id'=>$row->parent_id]);
+                    $row->prependTo($parent);
+
+                }
+                //$row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
                 $this->redirect('index');
@@ -99,8 +135,25 @@ class Goods_categoryController extends Controller
         $id = $request->post('id');
         //根据id查询数据
         $row = Goods_category::findOne($id);
-        //删除数据
-        $result = $row->delete();
+        //删除数据 只能删除空节点,
+        //当一个节点是叶子节点的时候,他就是空节点,所以只要判断当前节点是否是叶子节点即可
+        if($row->isLeaf())
+        {
+           if($row->parent_id !=0)
+           {
+               //如果叶子节点不是根节点,直接删除.
+               $result = $row->delete();
+           }else{
+             //节点和他的儿子一起删除
+               //$result = $row->deleteWithChildren();
+
+           }
+        }else{
+            //有子节点
+            echo '有子节点 不能删除';
+        }
+
+
         //响应ajax
         if($result)
         {

@@ -23,6 +23,7 @@ class BrandForm extends \yii\db\ActiveRecord
     public $intro;
     public $imgFile;
     public $status;
+    public $logo;
     public static function tableName()
     {
         return 'brand';
@@ -34,11 +35,11 @@ class BrandForm extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'intro','status'], 'required'],
+            [['name', 'intro','status','logo'], 'required'],
             [['intro'], 'string'],
             [['status'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            ['imgFile','file','extensions'=>['jpg','png','gif'],'skipOnEmpty'=>true]
+            //['imgFile','file','extensions'=>['jpg','png','gif'],'skipOnEmpty'=>true]
         ];
     }
 
@@ -50,7 +51,7 @@ class BrandForm extends \yii\db\ActiveRecord
         return [
             'name' => '品牌名称',
             'intro' => '品牌简介',
-            'logo' => 'Logo',
+            'logo' => '图片',
             'status' => '状态',
         ];
     }

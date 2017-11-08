@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'name')->textInput() ?>
         <?= $form->field($model, 'intro')->textarea() ?>
-        <?php // $form->field($model, 'imgFile')->fileInput()
+        <?php  echo $form->field($model, 'logo')->hiddenInput();
         // 引入cs 和 js  文件
         $this->registerCssFile('@web/webuploader/webuploader.css');
         $this->registerJsFile('@web/webuploader/webuploader.js',[
@@ -54,9 +54,13 @@ uploader.on( 'uploadSuccess', function( file ,response) {
     //console.log(file);
     //response.url  //上传成功的文件路径
     //将图片地址赋值给img
+ 
+ 
+
     $("#img").attr('src',response.url);
     //将图片地址写入logo
-    $("#brand-logo").val(response.url);
+    $("#brandform-logo").val(response.url);
+   
 });
 JS
 
@@ -69,6 +73,7 @@ JS
             <div id="filePicker">选择图片</div>
         </div>
         <div><img id="img"  /></div>
+
         <?= $form->field($model, 'status')->radioList(['1'=>'显示','0'=>'隐藏']) ?>
     
         <div class="form-group">

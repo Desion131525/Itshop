@@ -53,7 +53,7 @@ class GoodsForm extends Model
     public function rules()
     {
         return [
-            [['goods_category_id', 'brand_id', 'stock', 'status',
+            [[ 'brand_id', 'stock', 'status',
                 'market_price', 'is_on_sale','shop_price','name','sn'], 'required'],
             [['market_price', 'shop_price',], 'number'],
             [['name', 'sn'], 'string', 'max' => 20],
@@ -77,6 +77,7 @@ class GoodsForm extends Model
             'stock' => '库存',
             'status' => '状态',
             'is_on_sale' => '是否在售',
+            'imgFile' => 'LOGO图片',
         ];
     }
 }

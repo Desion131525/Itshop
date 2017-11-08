@@ -7,7 +7,11 @@ use backend\models\BrandForm;
 use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
+// 引入鉴权类
+use Qiniu\Auth;
 
+// 引入上传类
+use Qiniu\Storage\UploadManager;
 class BrandController extends \yii\web\Controller
 {
     public $enableCsrfValidation = false;
@@ -39,6 +43,7 @@ class BrandController extends \yii\web\Controller
             $brand = new Brand();
             //接收表单数据
             $model->load($request->post());
+            //var_dump($model);die;
             //将文件封装成对象
             //$model->imgFile = UploadedFile::getInstance($model,'imgFile');
 
@@ -62,6 +67,7 @@ class BrandController extends \yii\web\Controller
                 $brand->name = $model->name;
                 $brand->intro = $model->intro;
                 $brand->status = $model->status;
+                $brand->logo = $model->logo;
                 $brand->save(false);
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
@@ -94,7 +100,7 @@ class BrandController extends \yii\web\Controller
             $model->imgFile = UploadedFile::getInstance($model,'imgFile');
             //验证数据
             if($model->validate())
-            {   //判断是否有图片上传
+            {   /*//判断是否有图片上传
                 if ($model->imgFile!=null)
                 {
                     //获取文件扩展名
@@ -104,11 +110,12 @@ class BrandController extends \yii\web\Controller
                     //指定文件保存的路径
                     $model->imgFile->saveAs(\Yii::getAlias('@webroot').$fileName,0);
                     $row->logo = $fileName;
-                }
+                }*/
                 //将文件路径保存到数据库
                 $row->name = $model->name;
                 $row->intro = $model->intro;
                 $row->status = $model->status;
+                $row->logo = $model->logo;
                 $row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','修改成功');
@@ -158,6 +165,42 @@ class BrandController extends \yii\web\Controller
                 $fileName = '/upload/'.uniqid().'.'.$ext;
                 //指定文件保存的路径
                 $imgFile->saveAs(\Yii::getAlias('@webroot').$fileName,0);
+                //--------------------------------------------------------
+                //将文件上传到七牛云
+                // 需要填写你的 Access Key 和 Secret Key
+                $accessKey ="uWk6rf6cKKp40JXcQTBxoT4t9ngyBQl9oLcPXfLb";
+                $secretKey = "gOkkcbu3BmPXAR0Ob6TzyVYaUZ9JKEZ6GWI1fSvv";
+                //对象空间的名称
+                $bucket = "itshop";
+
+                // 构建鉴权对象
+                $auth = new Auth($accessKey, $secretKey);
+
+                // 生成上传 Token
+                $token = $auth->uploadToken($bucket);
+
+                // 要上传文件的本地路径
+                $filePath = \Yii::getAlias('@webroot').$fileName;
+
+                // 上传到七牛后保存的文件名
+                $key = $fileName;
+
+                // 初始化 UploadManager 对象并进行文件的上传。
+                $uploadMgr = new UploadManager();
+
+                // 调用 UploadManager 的 putFile 方法进行文件的上传。
+                list($ret, $err) = $uploadMgr->putFile($token, $key, $filePath);
+               // echo "\n====> putFile result: \n";
+                if ($err !== null) {
+                    //上传失败返回错误信息
+                    return json_encode(['url'=>$err]);
+                } else {
+                    //上传成功返回七牛云路径
+                    return json_encode(['url'=>'http://oyy23zq8f.bkt.clouddn.com/'.$fileName]);
+                }
+
+                //--------------------------------------------------------
+
             }
 
         }
@@ -216,5 +259,41 @@ class BrandController extends \yii\web\Controller
             echo '1';
         }
     }
+
+
+   /* //测试七牛云
+    public function actionTest()
+    {
+        // 需要填写你的 Access Key 和 Secret Key
+        $accessKey ="uWk6rf6cKKp40JXcQTBxoT4t9ngyBQl9oLcPXfLb";
+        $secretKey = "gOkkcbu3BmPXAR0Ob6TzyVYaUZ9JKEZ6GWI1fSvv";
+        //对象空间的名称
+        $bucket = "itshop";
+
+        // 构建鉴权对象
+        $auth = new Auth($accessKey, $secretKey);
+
+        // 生成上传 Token
+        $token = $auth->uploadToken($bucket);
+
+        // 要上传文件的本地路径
+        $filePath = \Yii::getAlias('@webroot').'/upload/2.jpg';
+
+        // 上传到七牛后保存的文件名
+        $key = '/upload/2.jpg';
+
+        // 初始化 UploadManager 对象并进行文件的上传。
+        $uploadMgr = new UploadManager();
+
+        // 调用 UploadManager 的 putFile 方法进行文件的上传。
+        list($ret, $err) = $uploadMgr->putFile($token, $key, $filePath);
+        echo "\n====> putFile result: \n";
+        if ($err !== null) {
+            var_dump($err);
+        } else {
+            var_dump($ret);
+        }
+
+    }*/
 
 }
