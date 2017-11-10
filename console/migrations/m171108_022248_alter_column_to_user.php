@@ -7,8 +7,10 @@ class m171108_022248_alter_column_to_user extends Migration
     public function up()
     {
         $this->addColumn('user','last_login_time',
-        $this->integer()->notNull()->comment('')
-
+        $this->integer()->notNull()->comment('最后登陆时间')
+        );
+        $this->addColumn('user','last_login_ip',
+        $this->integer()->notNull()->comment('最后登陆ip')
         );
     }
 

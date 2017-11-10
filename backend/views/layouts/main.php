@@ -51,19 +51,29 @@ AppAsset::register($this);
                         ['label'=>'文章分类','url' => ['/article_category/index']]
                     ],
         ],
+        [
+            'label' => '帐户管理',
+            'items' =>
+                    [
+                        ['label'=>'管理员列表','url' => ['/user/index']],
+                        ['label'=>'角色列表','url' => ['/role/index']],
+                        ['label'=>'权限列表','url' => ['/permission/index']],
+                        ['label'=>'密码修改','url' => ['/user/edit_password']],
+                    ],
+        ],
 
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '品牌列表', 'url' => ['/brand/index']];
-        $menuItems[] = ['label' => '管理员', 'url' => ['/user/index']];
- //       $menuItems[] = ['label' => '文章分类', 'url' => ['/article_category/index']];
+        //$menuItems[] = ['label' => '管理员', 'url' => ['/user/index']];
+        $menuItems[] = ['label' => '登陆', 'url' => ['/user/login']];
  //       $menuItems[] = ['label' => '商品列表', 'url' => ['goods/index']];
  //       $menuItems[] = ['label' => '商品分类', 'url' => ['goods_category/index']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '注销 (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

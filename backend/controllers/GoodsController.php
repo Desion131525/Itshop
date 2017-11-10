@@ -401,14 +401,33 @@ class GoodsController extends Controller
         //每页显示条数据
         $pager->pageSize = 3;
         //查询数据
-        $goods = Goods::find();
+        $goods = Goods::find()->where(['status'=>1]);
         //接收数据
         $request = new Request();
-        $name = $request->get('search');
+        $name = $request->get('name');
+        $sn = $request->get('sn');
+        $shop_price = $request->get('shop_price');
+        $shop_price_max = $request->get('shop_price_max');
+        if($name)
+        {
+            $goods->andWhere(['like','name',$name]);
+        }
+        if($sn)
+        {
+            $goods->andWhere(['like','sn',$sn]);
+        }
+        if($shop_price)
+        {
+            $goods->andWhere(['>','shop_price',$shop_price]);
+        }
+        if($shop_price_max)
+        {
+            $goods->andWhere(['<','shop_price',$shop_price_max]);
+        }
         //总的记录数
-        $pager->totalCount = $goods->where(['status'=>1])->andWhere(['like','name',$name])->count();
+        $pager->totalCount = $goods->count();
         //设置偏移量
-        $rows = $goods->where(['status'=>1])->andWhere(['like','name',$name])->limit($pager->limit)->offset($pager->offset)->all();
+        $rows = $goods->limit($pager->limit)->offset($pager->offset)->all();
         return $this->render('index',['rows'=>$rows,'pager'=>$pager]);
 
     }

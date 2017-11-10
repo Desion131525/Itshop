@@ -51,18 +51,48 @@
             </td>
         </tr>
     <?php endforeach;?>
-
-    <!-- 搜索  -->
+<!-------------------------------------------------------------------------------------->
     <form class="form-inline" role="form" method="get" action="search">
-        <button type="submit" class="btn btn-default">搜索</button>
-        <div class="form-group col-lg-4">
-            <label class="sr-only" for="exampleInputEmail2"></label>
-            <input type="text" name="search" class="form-control" id="exampleInputEmail2" placeholder="输入关键字搜索">
+        <div class="form-group col-lg-1">
+            <a href="add" class="btn btn-primary">添加商品</a>
         </div>
+        <div class="form-group col-lg-2">
+            <input type="text" name="name" class="form-control" id="exampleInputEmail2" placeholder="商品名称">
+        </div>
+       <div class="form-group col-lg-2">
+              <input type="text" name="sn" class="form-control" id="exampleInputEmail2" placeholder="货号">
+          </div>
+            <div class="form-group col-lg-2">
+              <input type="text" name="shop_price" class="form-control" id="exampleInputEmail2" placeholder="￥">
+          </div>
+           <div class="form-group col-lg-2">
+              <input type="text" name="shop_price_max" class="form-control" id="exampleInputPassword2" placeholder="￥">
+          </div>
+
+          <button type="submit" class="btn btn-default">搜索</button>
     </form>
-    <div>
-        <a href="add" class="btn btn-primary">添加商品</a>
-    </div>
+<!-------------------------------------------------------------------------------------->
+    <!-- 搜索  -->
+    <!--<form class="form-inline" role="form" method="get" action="search">
+
+        <div class="container">
+            <div class="col-lg-1">
+
+            </div>
+            <div class="row">
+                <div class="col-lg-1">
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </div>
+                <div class="col-lg-4">
+                    <input type="text" name="search" class="form-control" id="exampleInputEmail2" placeholder="输入关键字搜索">
+                </div>
+
+            </div>-->
+
+        </div>
+
+    </form>
+
 
 </table>
     <a href="recycle" class="btn btn-warning">回收站</a><br/>

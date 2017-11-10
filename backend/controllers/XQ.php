@@ -145,3 +145,19 @@ path	varchar(255)	图片地址
 
 composer安装ueditor文本编辑器插件（插件地址https://github.com/BigKuCha/yii2-ueditor-widget）
 composer require "kucha/ueditor": "*"
+
+
+day7
+
+需求
+
+使用RBAC管理用户和权限
+权限增删改查
+角色增删改查
+角色和权限关联
+用户和角色关联
+插件
+
+权限列表展示使用datatables插件
+插件网址https://datatables.net/
+插件入门文档http://www.datatables.club/manual/install.html
