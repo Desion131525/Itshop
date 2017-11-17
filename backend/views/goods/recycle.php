@@ -6,6 +6,12 @@ header("Content-Type: text/html;charset=utf-8");
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .img-rounded{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
 <table class="table table-bordered">
@@ -32,7 +38,7 @@ header("Content-Type: text/html;charset=utf-8");
             <td><?=$v->stock?></td>
             <td><?=$v->is_on_sale?></td>
             <td><?=$v->view_times?></td>
-            <td><img src="<?=Yii::getAlias('@web').$v->logo?>"/></td>
+            <td><img src="<?=Yii::getAlias('@web').$v->logo?>" class="img-rounded"/></td>
             <td><?=$v->create_time?></td>
             <td>
                 <a href="recycle?id=<?=$v->id?>" class="btn btn-success restore">立即恢复</a>

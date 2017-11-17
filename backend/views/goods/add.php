@@ -13,7 +13,7 @@ use \kucha\ueditor\UEditor;
     <?php $form = ActiveForm::begin(); ?>
 
         <?= $form->field($model, 'name')->textInput() ?>
-        <?= $form->field($model, 'sn')->textInput() ?>
+
 
         <?= $form->field($model, 'brand_id')->dropDownList($brand) ?>
         <?= $form->field($goods_categoryForm, 'parent_id')->hiddenInput() ?>

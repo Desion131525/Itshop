@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use backend\filters\AdminFilter;
 use backend\models\Brand;
 use backend\models\Goods;
 use backend\models\Goods_category;
@@ -25,7 +26,7 @@ use yii\web\UploadedFile;
 class GoodsController extends Controller
 {
     public $enableCsrfValidation = false;
-    //>>1显示品牌列表
+    //>>1显示商品列表
     public function actionIndex()
     {
         $model = new GoodsForm();
@@ -34,7 +35,7 @@ class GoodsController extends Controller
         //查询数据
         $goods = Goods::find();
         //每页显示条数据
-        $pager->pageSize = 3;
+        $pager->pageSize = 5;
         //总记录数据
         $pager->totalCount = $goods->where(['status'=>1])->count();
         //设置偏移量
@@ -64,7 +65,7 @@ class GoodsController extends Controller
         $goods_categoryForm->parent_id = 0;
         $gc = ArrayHelper::map($gc,'id','name');
 
-        //查询当天商品添加次数
+       /* //查询当天商品添加次数
         $day = date('Y-m-d',time());
         $goods_day = Goods_day_count::find()->where(['day'=>$day])->one();
 
@@ -82,10 +83,29 @@ class GoodsController extends Controller
             $sn = date('Ymd',time()).$count;
             $model->sn = $sn;
             //var_dump($sn);die;
-        }
+        }*/
 
         if($request->isPost)
-        {
+        { //查询当天商品添加次数
+            $day = date('Y-m-d',time());
+            $goods_day = Goods_day_count::find()->where(['day'=>$day])->one();
+
+            if($goods_day!=null)
+            {
+                //有次数则拼接货号 = 当天日期+当天添加的商品次数
+                $count = str_pad($goods_day->count+1,'5','0',STR_PAD_LEFT);
+                $sn = date('Ymd',time()).$count;
+                $model->sn = $sn;
+                //var_dump($sn);die;
+
+            }else{
+                //没有则货号 = 当天日期+00001
+                $count = str_pad(1,'5','0',STR_PAD_LEFT);
+                $sn = date('Ymd',time()).$count;
+                $model->sn = $sn;
+                //var_dump($sn);die;
+            }
+
             $goods = new Goods();
             $goods_content = new Goods_intro();
 
@@ -156,7 +176,7 @@ class GoodsController extends Controller
                 }
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect("img?id=$goods->id");
+                $this->redirect(["goods/img?id=$goods->id"]);
             }
         }
         //跳转
@@ -234,7 +254,7 @@ class GoodsController extends Controller
                 $content->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','修改成功');
-                $this->redirect('index');
+                $this->redirect(['goods/index']);
             }
 
         }
@@ -270,7 +290,7 @@ class GoodsController extends Controller
         //查询数据
         $goods = Goods::find();
         //每页显示条数据
-        $pager->pageSize = 3;
+        $pager->pageSize = 10;
         //总记录数据
         $pager->totalCount = $goods->where(['status'=>['-1']])->count();
         //设置偏移量
@@ -399,7 +419,7 @@ class GoodsController extends Controller
         //实例化分页组件
         $pager = new Pagination();
         //每页显示条数据
-        $pager->pageSize = 3;
+        $pager->pageSize = 5;
         //查询数据
         $goods = Goods::find()->where(['status'=>1]);
         //接收数据
@@ -439,5 +459,18 @@ class GoodsController extends Controller
                 'class' => 'kucha\ueditor\UEditorAction',
             ]
         ];
+    }
+
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['add'],//指定执行的过虑器的操作,
+                    'except'=>['upload','add_img','img'],//除了这些操作,都有效
+                ]
+
+            ];
     }
 }

@@ -20,12 +20,30 @@
             <td><?=$v->id?></td>
             <td><?=$v->name?></td>
             <td>
-                <a href="edit?&id=<?=$v->id?>" class="btn btn-primary">修改</a>
-                <a href="javascript: ;" class="btn btn-danger del">删除</a>
+                <?php
+                $can = \Yii::$app->user;
+                if($can->can('goods_category/edit'))
+                {
+                    echo "<a href='edit?&id=$v->id' class='btn btn-primary' >修改</a>";
+                }
+                if($can->can('goods_category/del'))
+                {
+                   echo "<a href='javascript: ;'class='btn btn-danger del' >删除</a>";
+                }
+
+                ?>
+
+
             </td>
         </tr>
     <?php endforeach;?>
-    <a href="add" class="btn btn-primary">添加分类</a>
+    <?php
+    if($can->can('goods_category/add'))
+    {
+       echo " <a href='add' class='btn btn-primary' >添加分类</a>";
+    }
+    ?>
+
 </table>
 
 <!--
@@ -48,6 +66,8 @@ $this->registerJs(
               if(data=='1')
               {
                   $(that).closest('tr').remove();
+              }else {
+                  alert(data);
               }
             })
         }

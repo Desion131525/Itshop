@@ -44,10 +44,33 @@
             <td><img src="<?=Yii::getAlias('@web').$v->logo?>" class="img-rounded"/></td>
             <td><?=$v->create_time?></td>
             <td>
-                <a href="edit?id=<?=$v->id?>" class="btn btn-primary">修改</a>
-                <a href="img?id=<?=$v->id?>" class="btn btn-primary">相册</a>
-                <a href="intro?id=<?=$v->id?>" class="btn btn-primary">商品详情</a>
-                <a href="javascript: ;" class="btn btn-danger del">删除</a>
+
+                <?php
+                $can = \Yii::$app->user;
+                if($can->can('goods/img'))
+                {
+                    echo " <a href='img?id=$v->id' class='btn btn-primary'>相册</a>";
+
+                }
+                if($can->can('goods/edit'))
+                {
+                    echo " <a href='edit?id=$v->id' class='btn btn-primary'>修改</a>";
+
+                }
+                if($can->can('goods/intro'))
+                {
+                    echo " <a href='intro?id=$v->id' class='btn btn-primary'>商品详情</a>";
+
+                }
+                if($can->can('goods/del'))
+                {
+                    echo " <a href='javascript: ;' class='btn btn-danger del'>删除</a>";
+
+                }
+                ?>
+
+
+
             </td>
         </tr>
     <?php endforeach;?>
@@ -95,7 +118,15 @@
 
 
 </table>
-    <a href="recycle" class="btn btn-warning">回收站</a><br/>
+<?php
+$can = Yii::$app->user;
+if($can->can('goods/recycle'))
+{
+    echo "<a href='recycle' class='btn btn-warning' >回收站</a><br/>";
+}
+
+?>
+
 
 <!-- Modal -->
 <?php

@@ -52,7 +52,9 @@ use yii\widgets\ActiveForm;
       
            zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
            //展开所有节点
-              zTreeObj.expandAll(true);
+           
+              zTreeObj.expandAll();
+             
          
         //获取节点  ,根据节点的id搜索节点
         var node = zTreeObj.getNodeByParam("id", {$model->parent_id}, null);   

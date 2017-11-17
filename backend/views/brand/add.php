@@ -55,8 +55,6 @@ uploader.on( 'uploadSuccess', function( file ,response) {
     //response.url  //上传成功的文件路径
     //将图片地址赋值给img
  
- 
-
     $("#img").attr('src',response.url);
     //将图片地址写入logo
     $("#brandform-logo").val(response.url);

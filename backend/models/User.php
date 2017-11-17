@@ -38,6 +38,79 @@ class User extends ActiveRecord implements IdentityInterface
             're_pad'=>'再次输入新密码',
         ];
     }
+
+    //获取用户对应的菜单
+    public function getMenus()
+    {
+       /* $menuItems = [
+            [
+                'label' => '商品管理',
+                'items' =>
+                    [
+                        ['label'=>'商品列表','url' => ['/goods/index']],
+                        ['label'=>'商品分类','url' => ['/goods_category/index']]
+                    ],
+            ],
+            [
+                'label' => '文章管理',
+                'items' =>
+                    [
+                        ['label'=>'文章列表','url' => ['/article/index']],
+                        ['label'=>'文章分类','url' => ['/article_category/index']]
+                    ],
+            ],
+            [
+                'label' => '帐户管理',
+                'items' =>
+                    [
+                        ['label'=>'管理员列表','url' => ['/user/index']],
+                        ['label'=>'角色列表','url' => ['/role/index']],
+                        ['label'=>'权限列表','url' => ['/permission/index']],
+                        ['label'=>'密码修改','url' => ['/user/edit_password']],
+                    ],
+            ],
+
+        ];*/
+
+        $menuItems = [];
+        $menus = Menu::find()->where(['parent_id'=>0])->all();
+
+       //获取所有一级菜单
+        foreach ($menus as $menu)
+        {
+            $items = [];
+            //遍历该一级菜单的子菜单
+            foreach ($menu->children as $child)
+            {
+                //根据权限来确定是否显示该菜单
+                if(\Yii::$app->user->can($child->route))
+                {
+                    $items[] = ['label'=>$child->name,'url'=>[$child->route]];
+                }
+
+            }
+            $menuItem = ['label'=>$menu->name,'items'=>$items];
+            //将该组菜单放入菜单组里面.
+            //如果没有二级菜单就不显示一级菜单
+            if($items)
+            {
+                $menuItems[] = $menuItem;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+        return $menuItems;
+    }
+
+
     /**
      * Finds an identity by the given ID.
      * @param string|int $id the ID to be looked for
@@ -103,7 +176,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->auth_key === $authKey;
 
-    }
+}
 
 
 }

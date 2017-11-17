@@ -1,7 +1,9 @@
 <?php
 namespace backend\controllers;
+use backend\filters\AdminFilter;
 use backend\models\Auth_item;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Request;
 
 /**
@@ -27,25 +29,22 @@ class PermissionController extends Controller
     //添加权限
     public function actionAdd()
     {
-        //创建权限对象
-        $permission = \Yii::$app->authManager;
+
         //显示添加表单
         $model = new Auth_item();
         $request = new Request();
+        //设置权限场景
+        $model->scenario = Auth_item::SCENARIO_Add;
         if($request->isPost)
         {
             //接收数据
             $model->load($request->post());
             //验证数据
-            if($model->validate())
+            if($model->validate()&&$model->add())
             {
-                //保存数据
-                $per1 = $permission->createPermission($model->name);
-                $per1->description = $model->description;
-                $permission->add($per1);
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['permission/index']);
             }
 
         }
@@ -78,10 +77,19 @@ class PermissionController extends Controller
         $rbac = \Yii::$app->authManager;
         //通过组件获取权限
         $row = $rbac->getPermission($name);
+        //如果权限不存在,抛出提示
+        if($row === null)
+        {
+            throw new NotFoundHttpException('权限不存在');
+
+        }
         //创建表单模型
         $model = new Auth_item();
+        //设置修改的时的权限场景
+        $model->scenario = Auth_item::SCENARIO_Edit;
         //将权限分别赋值
         $model->name = $row->name;
+        $model->old_name = $row->name;
         $model->description = $row->description;
         //接收修改后的数据
         if(\Yii::$app->request->post())
@@ -90,15 +98,32 @@ class PermissionController extends Controller
             //验证数据
             if($model->validate())
             {
+
                 $row->name = $model->name;
                 $row->description = $model->description;
                 $rbac->update($name,$row);
+
+                //跳转
+                \Yii::$app->session->setFlash('success','修改成功');
+                $this->redirect(['permission/index']);
             }
-            //跳转
-            \Yii::$app->session->setFlash('success','修改成功');
-            $this->redirect('index');
+
+
         }
         //将数据回显到表单
        return $this->render('edit',['model'=>$model]);
+    }
+
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['add'],//指定执行的过虑器的操作,
+                    //'except'=>['login'],//除了这些操作,都有效
+                ]
+
+            ];
     }
 }

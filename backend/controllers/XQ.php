@@ -161,3 +161,114 @@ day7
 权限列表展示使用datatables插件
 插件网址https://datatables.net/
 插件入门文档http://www.datatables.club/manual/install.html
+
+day8
+
+需求
+
+菜单增删改查
+菜单和权限关联
+根据权限显示菜单
+使用过滤器实现RBAC的权限控制
+所有删除功能修改为AJAX操作
+完善后台数据（品牌，商品分类，商品，权限，角色，菜单等）
+后台功能总结（项目总结）
+
+
+day9
+
+用户模块
+
+用户注册
+用户登录（允许自动登录，登录成功记录最后登录时间和ip）
+收货地址管理
+插件
+
+注册和登录表单前端使用jQuery Validation Plugin插件验证
+插件官网https://jqueryvalidation.org/
+中文入门帮助http://www.runoob.com/jquery/jquery-plugin-validate.html
+
+用户表member
+
+字段名	类型	注释
+id	primaryKey
+username	varchar(50)	用户名
+auth_key	varchar(32)
+password_hash	varchar(100)	密码（密文）
+email	varchar(100)	邮箱
+tel	char(11)	电话
+last_login_time	int	最后登录时间
+last_login_ip	int	最后登录ip
+status	int(1)	状态（1正常，0删除）
+created_at	int	添加时间
+updated_at	int	修改时间
+插件
+
+阿里大于（发送手机短信）
+
+
+day11 购物流程
+
+讲解购物流程
+
+购物车设计
+参照主流的购物车设计方案(京东),完成购物车的数据存放方式的设计
+如果没有登录就存放在cookie中
+如果已经登录,就存放在数据表中
+当用户登录的时候,将cookie中的数据自动同步到数据表中
+如果已经有这个商品,就合并cookie中的数量
+如果没有这个商品,就添加这个商品到购物车表
+数据表设计
+
+购物车表cart
+
+字段名	类型	注释
+id	primaryKey
+goods_id	int	商品id
+amount	int	商品数量
+member_id	int	用户id
+
+
+day12 订单
+
+需求
+
+在提交订单的时候:开启事务
+依次判断商品库存是否足够
+如果不够回滚
+如果足够执行后续下单流程
+下单成功后清除购物车
+我的订单
+
+显示订单列表
+订单表order
+
+字段名	类型	注释
+id	primaryKey
+member_id	int	用户id
+name	varchar(50)	收货人
+province	varchar(20)	省
+city	varchar(20)	市
+area	varchar(20)	县
+address	varchar(255)	详细地址
+tel	char(11)	电话号码
+delivery_id	int	配送方式id
+delivery_name	varchar	配送方式名称
+delivery_price	float	配送方式价格
+payment_id	int	支付方式id
+payment_name	varchar	支付方式名称
+total	decimal	订单金额
+status	int	订单状态（0已取消1待付款2待发货3待收货4完成）
+trade_no	varchar	第三方支付交易号
+create_time	int	创建时间
+订单商品详情表order_goods
+
+字段名	类型	注释
+id	primaryKey
+order_id	int	订单id
+goods_id	int	商品id
+goods_name	varchar(255)	商品名称
+logo	varchar(255)	图片
+price	decimal	价格
+amount	int	数量
+total	decimal	小计

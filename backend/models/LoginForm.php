@@ -22,7 +22,7 @@ class LoginForm extends Model
     {
         return [
             [['username','password'],'required'],
-            [["cookie"],"safe"]
+
         ];
     }
     //设置属性标签名

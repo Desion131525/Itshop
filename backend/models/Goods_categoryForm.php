@@ -32,6 +32,7 @@ class Goods_categoryForm extends Model
             'name' => '分类名称',
             'parent_id' => '上级分类',
             'intro' => '描述',
+
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AdminFilter;
 use backend\models\Article_category;
 use backend\models\Article_categoryForm;
 use yii\data\Pagination;
@@ -46,7 +47,7 @@ class Article_categoryController extends \yii\web\Controller
                 $ac->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['article_category/index']);
             }
 
         }
@@ -80,7 +81,7 @@ class Article_categoryController extends \yii\web\Controller
                 $row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['article_category/index']);
             }
 
         }
@@ -106,6 +107,19 @@ class Article_categoryController extends \yii\web\Controller
             echo '1';
         }
 
+    }
+
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['goods/add'],//指定执行的过虑器的操作,
+                    //'except'=>['login'],//除了这些操作,都有效
+                ]
+
+            ];
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use backend\filters\AdminFilter;
 use backend\models\Goods_category;
 use backend\models\Goods_categoryForm;
 use yii\data\Pagination;
@@ -22,7 +23,7 @@ class Goods_categoryController extends Controller
         //查询数据
         $goods_category = Goods_category::find();
         //每页显示条数据
-        $pager->pageSize = 3;
+        $pager->pageSize = 8;
         //总记录数据
         $pager->totalCount = $goods_category->count();
         //设置偏移量
@@ -57,8 +58,6 @@ class Goods_categoryController extends Controller
 
                         $gc->makeRoot() ;
 
-
-
                 }else{
                     $parent = Goods_category::findOne(['id'=>$gc->parent_id]);
                     $gc->prependTo($parent);
@@ -67,7 +66,8 @@ class Goods_categoryController extends Controller
 
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['goods_category/index']);
+
             };
 
         };
@@ -119,7 +119,7 @@ class Goods_categoryController extends Controller
                 //$row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['goods_category/index']);
             }
 
         }
@@ -138,21 +138,24 @@ class Goods_categoryController extends Controller
         //删除数据 只能删除空节点,
         //当一个节点是叶子节点的时候,他就是空节点,所以只要判断当前节点是否是叶子节点即可
         if($row->isLeaf())
-        {
-           if($row->parent_id !=0)
-           {
-               //如果叶子节点不是根节点,直接删除.
-               $result = $row->delete();
-           }else{
-             //节点和他的儿子一起删除
-               //$result = $row->deleteWithChildren();
+        { // echo 11;die;
+            if($row->parent_id!=0)
+            {
+                //如果叶子节点不是根节点,直接删除.
+                $result = $row->delete();
 
-           }
+
+            }else{
+                //节点和他的儿子一起删除
+                $result = $row->deleteWithChildren();
+
+            }
+
         }else{
             //有子节点
-            echo '有子节点 不能删除';
-        }
+            return '有子节点 不能删除';
 
+        }
 
         //响应ajax
         if($result)
@@ -160,6 +163,19 @@ class Goods_categoryController extends Controller
             echo '1';
         }
 
+    }
+
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['goods/add'],//指定执行的过虑器的操作,
+                    //'except'=>['login'],//除了这些操作,都有效
+                ]
+
+            ];
     }
 
 }

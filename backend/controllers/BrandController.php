@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AdminFilter;
 use backend\models\Brand;
 use backend\models\BrandForm;
 use yii\data\Pagination;
@@ -71,7 +72,7 @@ class BrandController extends \yii\web\Controller
                 $brand->save(false);
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['brand/index']);
             }
         }
         //跳转
@@ -119,7 +120,7 @@ class BrandController extends \yii\web\Controller
                 $row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','修改成功');
-                $this->redirect('index');
+                $this->redirect(['brand/index']);
             }
 
         }
@@ -163,41 +164,46 @@ class BrandController extends \yii\web\Controller
                 $ext = $imgFile->extension;
                 //拼接文件路径
                 $fileName = '/upload/'.uniqid().'.'.$ext;
+                $img = \Yii::getAlias('@webroot').$fileName;
                 //指定文件保存的路径
-                $imgFile->saveAs(\Yii::getAlias('@webroot').$fileName,0);
+               $result = $imgFile->saveAs($img,0);
+                if($result)
+                {
+                   return json_encode(['url'=>\Yii::getAlias('@web').$fileName]);
+                }
                 //--------------------------------------------------------
                 //将文件上传到七牛云
                 // 需要填写你的 Access Key 和 Secret Key
-                $accessKey ="uWk6rf6cKKp40JXcQTBxoT4t9ngyBQl9oLcPXfLb";
-                $secretKey = "gOkkcbu3BmPXAR0Ob6TzyVYaUZ9JKEZ6GWI1fSvv";
+ //               $accessKey ="uWk6rf6cKKp40JXcQTBxoT4t9ngyBQl9oLcPXfLb";
+  //              $secretKey = "gOkkcbu3BmPXAR0Ob6TzyVYaUZ9JKEZ6GWI1fSvv";
                 //对象空间的名称
-                $bucket = "itshop";
+ //               $bucket = "itshop";
 
                 // 构建鉴权对象
-                $auth = new Auth($accessKey, $secretKey);
+  //              $auth = new Auth($accessKey, $secretKey);
 
                 // 生成上传 Token
-                $token = $auth->uploadToken($bucket);
+  //              $token = $auth->uploadToken($bucket);
 
                 // 要上传文件的本地路径
-                $filePath = \Yii::getAlias('@webroot').$fileName;
+  //              $filePath = \Yii::getAlias('@webroot').$fileName;
 
                 // 上传到七牛后保存的文件名
-                $key = $fileName;
+  //              $key = $fileName;
 
                 // 初始化 UploadManager 对象并进行文件的上传。
-                $uploadMgr = new UploadManager();
+   //             $uploadMgr = new UploadManager();
 
                 // 调用 UploadManager 的 putFile 方法进行文件的上传。
-                list($ret, $err) = $uploadMgr->putFile($token, $key, $filePath);
+   //             list($ret, $err) = $uploadMgr->putFile($token, $key, $filePath);
                // echo "\n====> putFile result: \n";
-                if ($err !== null) {
+  //              if ($err !== null) {
                     //上传失败返回错误信息
-                    return json_encode(['url'=>$err]);
-                } else {
+   //                 return json_encode(['url'=>$err]);
+   //             } else {
                     //上传成功返回七牛云路径
-                    return json_encode(['url'=>'http://oyy23zq8f.bkt.clouddn.com/'.$fileName]);
-                }
+    //               return json_encode(['url'=>'http://oyy23zq8f.bkt.clouddn.com/'.$fileName]);
+      //          }
 
                 //--------------------------------------------------------
 
@@ -252,14 +258,32 @@ class BrandController extends \yii\web\Controller
         //根据id查询数据
         $row = Brand::findOne($id);
         //删除数据
+        //$fileName = $row->logo;
+
         $result = $row->delete();
+
         //响应ajax
         if($result)
         {
+            unlink(\Yii::getAlias('@webroot').$row->logo);
             echo '1';
+
+
         }
     }
+//D:/PhPstudy/WWW/shop1103/backend/web/upload/59fc44ef93389.png
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['add'],//指定执行的过虑器的操作,
+                    //'except'=>['login'],//除了这些操作,都有效
+                ]
 
+            ];
+    }
 
    /* //测试七牛云
     public function actionTest()

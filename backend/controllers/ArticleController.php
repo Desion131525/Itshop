@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use backend\filters\AdminFilter;
 use backend\models\Article;
 use backend\models\Article_detail;
 use backend\models\Article_detailForm;
@@ -70,7 +71,7 @@ class ArticleController extends Controller
 
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['article/index']);
             }
 
         }
@@ -110,7 +111,7 @@ class ArticleController extends Controller
                 $ad_row->save();
                 //跳转
                 \Yii::$app->session->setFlash('success','添加成功');
-                $this->redirect('index');
+                $this->redirect(['article/index']);
             }
 
         }
@@ -139,5 +140,18 @@ class ArticleController extends Controller
             echo '1';
         }
 
+    }
+
+    Public function behaviors()
+    {
+        Return
+            [
+                [
+                    'class'=>AdminFilter::className(),
+                    //'only'=>['add'],//指定执行的过虑器的操作,
+                    //'except'=>['login'],//除了这些操作,都有效
+                ]
+
+            ];
     }
 }

@@ -33,4 +33,9 @@ class TestController extends Controller
 
         return $this->render('test');
     }
+
+    public function actionLogin()
+    {
+        return $this->redirect('user/login');
+    }
 }

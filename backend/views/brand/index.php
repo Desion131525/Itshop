@@ -6,6 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .img-rounded{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
 <table class="table table-bordered">
@@ -21,16 +27,40 @@
             <td><?=$v->id?></td>
             <td><?=$v->name?></td>
             <td><?=$v->intro?></td>
-            <td><img src="<?=Yii::getAlias('@web').$v->logo?>"/></td>
+            <td><img src="<?=$v->logo?>" class="img-rounded"/></td>
             <td>
-                <a href="edit?id=<?=$v->id?>" class="btn btn-primary">修改</a>
-                <a href="javascript: ;" class="btn btn-danger del">删除</a>
+                <?php
+                $can = \Yii::$app->user;
+                if($can->can('brand/add'))
+                {
+                    echo " <a href='edit?id=$v->id' class='btn btn-primary' >修改</a>";
+                }
+                if($can->can('brand/del'))
+                {
+                    echo "<a href='javascript: ;' class='btn btn-danger del' >删除</a>";
+                }
+                ?>
+
             </td>
         </tr>
     <?php endforeach;?>
-    <a href="add" class="btn btn-primary">添加品牌</a>
+    <?php
+    $can = \Yii::$app->user;
+    if($can->can('brand/add'))
+    {
+       echo " <a href='add' class='btn btn-primary' >添加品牌</a>";
+    }
+    ?>
+
 </table>
-    <a href="recycle" class="btn btn-warning">回收站</a><br/>
+<?php
+$can = \Yii::$app->user;
+if($can->can('brand/recycle'))
+{
+    echo " <a href='recycle' class='btn btn-warning'>回收站</a><br/>";
+}
+?>
+
 
 <!-- Modal -->
 <?php
