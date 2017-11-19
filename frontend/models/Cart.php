@@ -31,4 +31,11 @@ class Cart extends ActiveRecord
 
             ];
     }
+
+    //建立购物车与商品之间的关系 一对多
+    // cart.goods_id --- goods.id
+    public function getGoods()
+    {
+        return $this->hasOne(\backend\models\Goods::className(),['id'=>'goods_id']);
+    }
 }

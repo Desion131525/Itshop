@@ -58,7 +58,7 @@
 		<div class="fillin_hd">
 			<h2>填写并核对订单信息</h2>
 		</div>
-
+       <form action="" method="post" class="form">
 		<div class="fillin_bd">
 			<!-- 收货人信息  start-->
 			<div class="address">
@@ -66,7 +66,7 @@
 				<div class="address_info">
 				<p>
                     <?php foreach ($rows as $row):?>
-					<input type="radio" value="1" name="address_id"/><?=$row->name?>  <?=$row->tel?>  <?=$row->cmb_province?> <?=$row->cmb_city?> <?=$row->cmb_area?> </p>
+					<input type="radio" value="<?=$row->id?>" name="address_id"/><?=$row->name?>  <?=$row->tel?>  <?=$row->cmb_province?> <?=$row->cmb_city?> <?=$row->cmb_area?> </p>
 					<?php endforeach;?>
 				</div>
 
@@ -89,32 +89,15 @@
 							</tr>
 						</thead>
 						<tbody>
+                            <?php foreach ($order::$deliveries as $k => $v):?>
 							<tr class="cur">	
 								<td>
-									<input type="radio" name="delivery" checked="checked" />普通快递送货上门
-
+									<input type="radio" name="delivery" value="<?=$k?>" class="delivery_name"/><?=$v[0]?>
 								</td>
-								<td>￥10.00</td>
-								<td>每张订单不满499.00元,运费15.00元, 订单4...</td>
+								<td>￥<span class="freight"><?=number_format($v[1])?></span></td>
+								<td><?=$v[2]?></td>
 							</tr>
-							<tr>
-								
-								<td><input type="radio" name="delivery" />特快专递</td>
-								<td>￥40.00</td>
-								<td>每张订单不满499.00元,运费40.00元, 订单4...</td>
-							</tr>
-							<tr>
-								
-								<td><input type="radio" name="delivery" />加急快递送货上门</td>
-								<td>￥40.00</td>
-								<td>每张订单不满499.00元,运费40.00元, 订单4...</td>
-							</tr>
-							<tr>
-
-								<td><input type="radio" name="delivery" />平邮</td>
-								<td>￥10.00</td>
-								<td>每张订单不满499.00元,运费15.00元, 订单4...</td>
-							</tr>
+							<?php endforeach;?>
 						</tbody>
 					</table>
 
@@ -128,15 +111,14 @@
 
 
 				<div class="pay_select">
-					<table> 
+					<table>
+                        <?php foreach ($order::$payment as $k => $v):?>
 						<tr class="cur">
-							<td class="col1"><input type="radio" name="pay" />货到付款</td>
-							<td class="col2">送货上门后再收款，支持现金、POS机刷卡、支票支付</td>
+							<td class="col1"><input type="radio" name="pay" value="<?=$k?>"/><?=$v[0]?></td>
+							<td class="col2"><?=$v[1]?></td>
 						</tr>
-						<tr>
-							<td class="col1"><input type="radio" name="pay" />在线支付</td>
-							<td class="col2">即时到帐，支持绝大数银行借记卡及部分银行信用卡</td>
-						</tr>
+                        <?php endforeach;?>
+
 					</table>
 
 				</div>
@@ -144,31 +126,7 @@
 			<!-- 支付方式  end-->
 
 			<!-- 发票信息 start-->
-			<div class="receipt none">
-				<h3>发票信息 </h3>
 
-
-				<div class="receipt_select ">
-					<form action="">
-						<ul>
-							<li>
-								<label for="">发票抬头：</label>
-								<input type="radio" name="type" checked="checked" class="personal" />个人
-								<input type="radio" name="type" class="company"/>单位
-								<input type="text" class="txt company_input" disabled="disabled" />
-							</li>
-							<li>
-								<label for="">发票内容：</label>
-								<input type="radio" name="content" checked="checked" />明细
-								<input type="radio" name="content" />办公用品
-								<input type="radio" name="content" />体育休闲
-								<input type="radio" name="content" />耗材
-							</li>
-						</ul>						
-					</form>
-
-				</div>
-			</div>
 			<!-- 发票信息 end-->
 
 			<!-- 商品清单 start -->
@@ -184,38 +142,34 @@
 						</tr>	
 					</thead>
 					<tbody>
+                    <?php foreach ($carts as $cart):?>
 						<tr>
-							<td class="col1"><a href=""><img src="/images/cart_goods1.jpg" alt="" /></a>  <strong><a href="">【1111购物狂欢节】惠JackJones杰克琼斯纯羊毛菱形格</a></strong></td>
-							<td class="col3">￥499.00</td>
-							<td class="col4"> 1</td>
-							<td class="col5"><span>￥499.00</span></td>
+							<td class="col1"><a href=""><img src="http://www.itshop.com<?=$cart->goods->logo?>" alt="" /></a>  <strong><a href=""><?=$cart->goods->name?></a></strong></td>
+							<td class="col3"><?=$cart->goods->market_price?></td>
+							<td class="col4"><?=$cart->amount?></td>
+							<td class="col5">￥<span><?=number_format($cart->amount*$cart->goods->market_price,2)?></span></td>
 						</tr>
-						<tr>
-							<td class="col1"><a href=""><img src="/images/cart_goods2.jpg" alt="" /></a> <strong><a href="">九牧王王正品新款时尚休闲中长款茄克EK01357200</a></strong></td>
-							<td class="col3">￥1102.00</td>
-							<td class="col4">1</td>
-							<td class="col5"><span>￥1102.00</span></td>
-						</tr>
+						<?php endforeach;?>
 					</tbody>
 					<tfoot>
 						<tr>
 							<td colspan="5">
 								<ul>
 									<li>
-										<span>4 件商品，总商品金额：</span>
-										<em>￥5316.00</em>
+										<span><?=$query->count()?> 件商品，总商品金额：</span>
+                                        <em>￥<span class="total_1"><?=$total?></span></em>
 									</li>
 									<li>
 										<span>返现：</span>
-										<em>-￥240.00</em>
+										<em><span>￥<span>0.00</em>
 									</li>
 									<li>
 										<span>运费：</span>
-										<em>￥10.00</em>
+                                        <em>￥<span class="em"></span></em>
 									</li>
 									<li>
 										<span>应付总额：</span>
-										<em>￥5076.00</em>
+										<em>￥<span class="total_2"><?=$total?></span></em>
 									</li>
 								</ul>
 							</td>
@@ -228,11 +182,62 @@
 		</div>
 
 		<div class="fillin_ft">
-			<a href=""><span>提交订单</span></a>
-			<p>应付总额：<strong>￥5076.00元</strong></p>
+			<a href="javascript: ;" class="submit"><span>提交订单</span></a>
+			<p>应付总额：<strong>￥<span class="total_3"><?=$total?></span></strong></p>
 			
 		</div>
+       </form>
 	</div>
+    <!--js-->
+    <script type="text/javascript">
+
+        $('.submit').click(function () {
+            var url = "<?=\yii\helpers\Url::to(['order/order_point'])?>";
+            $.post(url,$('.form').serialize(),function (data) {
+               if(data=='1')
+               {
+                  $(location).prop('href',"<?=\yii\helpers\Url::to(['order/order_point'])?>") ;
+               }else {
+                  if(confirm(data+',是否返回购物车?'))
+                  {
+                      $(location).prop('href',"<?=\yii\helpers\Url::to(['index/cart'])?>") ;
+                  }
+               }
+            });
+
+        });
+
+
+
+
+
+
+
+    $('.delivery_name').click(function () {
+        var delivery =parseFloat($(this).closest('tr').find('td:eq(1)').find('span').text()) ;
+        //console.debug(delivery);
+        $('.em').text(delivery);
+     var total = parseFloat($('.total_1').text());
+        $('.total_1').text(total+delivery)
+        $('.total_2').text(total+delivery)
+        $('.total_3').text(total+delivery)
+
+
+    });
+
+
+    </script>
+
+
+
+    <!--js -->
+
+
+
+
+
+
+
 	<!-- 主体部分 end -->
 
 	<div style="clear:both;"></div>

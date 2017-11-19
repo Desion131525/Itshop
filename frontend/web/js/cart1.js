@@ -5,7 +5,7 @@
 */
 
 $(function(){
-	
+
 	//减少
 	$(".reduce_num").click(function(){
 		var amount = $(this).parent().find(".amount");
@@ -115,6 +115,7 @@ $(function(){
 		}
 
     });
+
 
     var total = 0;
     $(".col5 span").each(function(){
