@@ -157,8 +157,39 @@ class OrderController extends Controller
         return $this->render('order_point');
     }
 
+    //显示订单列表
+    public function actionOrder()
+    {
+        //根据用户id查询订单
+        $orders = Order::find()->where(['member_id'=>\Yii::$app->user->id])->all();
+        //通过订单id获取订单商品
+
+        return $this->render('order',['orders'=>$orders]);
+    }
+
+    //删除订单
+    public function actionDel($id)
+    {
+        //根据订单id查询订单
+        $order = Order::findOne($id);
+        //根据订单id查询商品
+        if($order->delete())
+        {
+            $goods = $order->order_goods;
+            foreach ($goods as $v)
+            {
+               $v->delete();
+            }
+
+            echo '1';
+
+        }else{
+
+            echo '删除订单失败';
+        }
 
 
+    }
 
 
 
@@ -166,9 +197,9 @@ class OrderController extends Controller
     //测试
     public function actionTest()
     {
-        $cart = Cart::findOne(['goods_id'=>55]);
+        $cart = Order::findOne(['id'=>9]);
 
-        $name =$cart->goods->name;
-        //var_dump($name);
+        $name =$cart->order_goods;
+
     }
 }

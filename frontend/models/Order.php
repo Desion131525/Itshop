@@ -24,4 +24,19 @@ class Order extends ActiveRecord
         1=>['在线支付','即时到帐，支持绝大数银行借记卡及部分银行信用卡'],
         2=>['货到付款','	送货上门后再收款，支持现金、POS机刷卡、支票支付']
     ];
+
+
+    //建立订单与商品之间的关系
+    // order.id ----order_goods.order_id 多对多
+    public function getOrder_goods()
+    {
+        return $this->hasMany(Order_goods::className(),['order_id'=>'id']);
+
+    }
+
+
+
+
+
+
 }

@@ -18,23 +18,10 @@ header('Content-Type: text/html;charset=utf-8');
 </head>
 <body>
 <!-- 顶部导航 start -->
-<div class="topnav">
-    <div class="topnav_bd w990 bc">
-        <div class="topnav_left">
-
-        </div>
-        <div class="topnav_right fr">
-            <ul>
-                <li>您好，欢迎来到京西！[<a href="<?=\yii\helpers\Url::to(['members/login'])?>">登录</a>] </li>
-                <li class="line">|</li>
-                <li>我的订单</li>
-                <li class="line">|</li>
-                <li>客户服务</li>
-
-            </ul>
-        </div>
-    </div>
-</div>
+<?php
+header("Content-Type: text/html;charset=utf-8");
+require Yii::getAlias('@frontend').'/views/header/header.php';
+?>
 <!-- 顶部导航 end -->
 
 <div style="clear:both;"></div>
@@ -42,7 +29,9 @@ header('Content-Type: text/html;charset=utf-8');
 <!-- 页面头部 start -->
 <div class="header w990 bc mt15">
     <div class="logo w990">
-        <h2 class="fl"><a href="<?=\yii\helpers\Url::to(['index/index'])?>"><img src="/images/logo.png" alt="京西商城"></a></h2>
+        <?php
+        require Yii::getAlias('@frontend').'/views/header/logo.php';
+        ?>
     </div>
 </div>
 <!-- 页面头部 end -->

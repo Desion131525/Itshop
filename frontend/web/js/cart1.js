@@ -120,6 +120,7 @@ $(function(){
     var total = 0;
     $(".col5 span").each(function(){
         total += parseFloat($(this).text());
+        console.debug(total);
     });
 
     $("#total").text(total.toFixed(2));
